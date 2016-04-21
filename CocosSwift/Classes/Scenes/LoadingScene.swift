@@ -20,6 +20,11 @@ class LoadingScene : CCScene {
         
         adicionarImagens()
         adicionarLabels()
+        DelayHelper.sharedInstance.callBlock({
+    
+            SoundPlayHelper.sharedInstance.preloadSoundsAndMusic()
+            
+            }, withDelay: 0.1)
         
 	}
 

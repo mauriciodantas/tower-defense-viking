@@ -17,6 +17,7 @@ class StateMachine {
 	// MARK Public Declarations
 
 	// MARK Private Declarations
+    private var bestScore:Int = 0
 
 	// MARK: - Singleton
 	class var sharedInstance:StateMachine {
@@ -80,4 +81,17 @@ class StateMachine {
 			}
 		}
 	}
+    
+    func atualizarMelhorScore(pontos:Int){
+    
+        if(self.bestScore<pontos){
+        
+            self.bestScore = pontos
+            
+        }
+    }
+    
+    func obterMelhorPontuacao() -> Int {
+        return self.bestScore
+    }
 }

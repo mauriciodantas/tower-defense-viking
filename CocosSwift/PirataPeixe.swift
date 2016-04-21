@@ -27,9 +27,23 @@ internal class PirataPeixe : CCNode {
         
         // Cria o sprite animado
         self.spritePirataPeixe = self.gerarAnimacaoSpriteWithName("PirataPeixe", aQtdFrames: 18)
-        self.spritePirataPeixe!.anchorPoint = CGPointMake(0.0, 0.0);
+        self.spritePirataPeixe!.anchorPoint = CGPointMake(0.5, 0.5);
         self.spritePirataPeixe!.position = CGPointMake(0.0, 0.0)
         self.addChild(self.spritePirataPeixe, z:2)
+        
+        
+        self.contentSize = self.spritePirataPeixe!.boundingBox().size
+        
+        self.physicsBody = CCPhysicsBody(rect: CGRectMake(0, 0, self.contentSize.width, self.contentSize.height), cornerRadius: 0.0)
+        self.physicsBody.type = CCPhysicsBodyType.Kinematic
+        self.physicsBody.friction = 1.0
+        self.physicsBody.elasticity = 0.1
+        self.physicsBody.mass = 100.0
+        self.physicsBody.density = 100.0
+        self.physicsBody.collisionType = "PirataPeixe"
+        self.physicsBody.collisionCategories = ["PirataPeixe"]
+        self.physicsBody.collisionMask = ["TiroPlayer","Barra"]
+
         
     }
     
@@ -54,7 +68,6 @@ internal class PirataPeixe : CCNode {
         var animFrames:Array<CCSpriteFrame> = Array()
         for (var i = 1; i <= aQtdFrames; i++) {
             let name:String = "\(aSpriteName)\(i).png"
-            print(name)
             animFrames.append(CCSpriteFrameCache.sharedSpriteFrameCache().spriteFrameByName(name))
         }
         // Cria a animacao dos frames montados
@@ -96,29 +109,7 @@ internal class PirataPeixe : CCNode {
     internal func height() -> CGFloat {
         return self.spritePirataPeixe!.boundingBox().size.height
     }
-    
-    // MARK: - Touchs Delegates
-    override func touchBegan(touch: UITouch!, withEvent event: UIEvent!) {
-        // Caso a cena principal esteja em gameplayer e nao seja possivel jogar impede o tap
-        if (!(self.targetID as! GameScene).canPlay) {
-            return
-        }
         
-        // Caso jah tenha recebido o tap, nao permite outro sobre o mesmo inseto
-        if (!self.alive) {
-            return
-        }
-        
-        self.alive = false
-
-                
-        self.stopAllSpriteActions()
-        self.spritePirataPeixe?.opacity = 0.0
-        
-        // Mata e executa o evento informado
-        DelayHelper.sharedInstance.callFunc(self.eventSelector!, onTarget: self.targetID!, withDelay: 0.0)
-    }
-    
     // MARK: - Death Cycle
     deinit {
         // Chamado no momento de desalocacao

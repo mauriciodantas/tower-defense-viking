@@ -27,9 +27,22 @@ internal class PirataPerneta : CCNode {
         
         // Cria o sprite  animado
         self.spritePirataPerneta = self.gerarAnimacaoSpriteWithName("Pirata", aQtdFrames: 18)
-        self.spritePirataPerneta!.anchorPoint = CGPointMake(0.0, 0.0);
+        self.spritePirataPerneta!.anchorPoint = CGPointMake(0.5, 0.5);
         self.spritePirataPerneta!.position = CGPointMake(0.0, 0.0)
         self.addChild(self.spritePirataPerneta, z:2)
+        
+        self.contentSize = self.spritePirataPerneta!.boundingBox().size
+        
+        self.physicsBody = CCPhysicsBody(rect: CGRectMake(0, 0, self.contentSize.width, self.contentSize.height), cornerRadius: 0.0)
+        self.physicsBody.type = CCPhysicsBodyType.Kinematic
+        self.physicsBody.friction = 1.0
+        self.physicsBody.elasticity = 0.1
+        self.physicsBody.mass = 100.0
+        self.physicsBody.density = 100.0
+        self.physicsBody.collisionType = "PirataPerneta"
+        self.physicsBody.collisionCategories = ["PirataPerneta"]
+        self.physicsBody.collisionMask = ["TiroPlayer","Barra"]
+
         
     }
     
@@ -54,7 +67,6 @@ internal class PirataPerneta : CCNode {
         var animFrames:Array<CCSpriteFrame> = Array()
         for (var i = 1; i <= aQtdFrames; i++) {
             let name:String = "\(aSpriteName)\(i).png"
-            print(name)
             animFrames.append(CCSpriteFrameCache.sharedSpriteFrameCache().spriteFrameByName(name))
         }
         // Cria a animacao dos frames montados
@@ -97,27 +109,8 @@ internal class PirataPerneta : CCNode {
         return self.spritePirataPerneta!.boundingBox().size.height
     }
     
-    // MARK: - Touchs Delegates
-    override func touchBegan(touch: UITouch!, withEvent event: UIEvent!) {
-        // Caso a cena principal esteja em gameplayer e nao seja possivel jogar impede o tap
-        if (!(self.targetID as! GameScene).canPlay) {
-            return
-        }
-        
-        // Caso jah tenha recebido o tap, nao permite outro sobre o mesmo inseto
-        if (!self.alive) {
-            return
-        }
-        
-        self.alive = false
-        
-        self.stopAllSpriteActions()
-        self.spritePirataPerneta?.opacity = 0.0
-        
-        
-        // Mata e executa o evento informado
-        DelayHelper.sharedInstance.callFunc(self.eventSelector!, onTarget: self.targetID!, withDelay: 0.0)
-    }
+    
+    
     
     // MARK: - Death Cycle
     deinit {

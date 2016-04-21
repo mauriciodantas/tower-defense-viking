@@ -26,6 +26,8 @@ class TiroPlayer : CCSprite {
     
     convenience override init() {
         self.init(imageNamed:"tiro-ipad.png")
+         self.contentSize = self.boundingBox().size
+        
         self.scale = 0.8
         self.physicsBody = CCPhysicsBody(rect: CGRectMake(0, 0, self.contentSize.width, self.contentSize.height), cornerRadius: 0.0)
         self.physicsBody.type = CCPhysicsBodyType.Kinematic
@@ -33,17 +35,13 @@ class TiroPlayer : CCSprite {
         self.physicsBody.elasticity = 0.1
         self.physicsBody.mass = 100.0
         self.physicsBody.density = 100.0
+        self.physicsBody.collisionType = "TiroPlayer"
+        self.physicsBody.collisionCategories = ["TiroPlayer"]
+        self.physicsBody.collisionMask = ["PirataPeixe","PirataPerneta"]
     }
     
     override func onEnter() {
         super.onEnter()
-    }
-    
-    func movaMeParaPosicao(posicao:CGPoint){
-        // Movimenta o disparo ateh a posicao do player
-        self.runAction(CCActionSequence.actionOne(CCActionMoveTo.actionWithDuration(2.4, position:CGPointMake(posicao.x, -100)) as! CCActionFiniteTime, two: CCActionCallBlock.actionWithBlock({ () -> Void in
-            self.removeFromParentAndCleanup(true)
-        }) as! CCActionFiniteTime) as! CCAction)
     }
     
     deinit {

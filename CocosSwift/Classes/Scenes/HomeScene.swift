@@ -83,7 +83,7 @@ class HomeScene : CCScene {
         self.addChild(lblNomeDoJogo)
             
         //lblBestScore
-        let lblScore:CCLabelTTF = CCLabelTTF(string: "Best Score: 0", fontName: "Chalkduster", fontSize: 30.0)
+        let lblScore:CCLabelTTF = CCLabelTTF(string: "Best Score: \(StateMachine.sharedInstance.obterMelhorPontuacao())", fontName: "Chalkduster", fontSize: 30.0)
         lblScore.color = CCColor.blackColor()
         lblScore.position = CGPointMake(self.screenSize.width/2, self.screenSize.height/2 - 350)
         lblScore.anchorPoint = CGPointMake(0.5, 0.5)

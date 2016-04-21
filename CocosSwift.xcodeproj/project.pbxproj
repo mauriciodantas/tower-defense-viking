@@ -228,6 +228,7 @@
 		AC344CF51CB5D68B0026B677 /* tiro-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = AC344CDD1CB5D68B0026B677 /* tiro-ipad.png */; };
 		AC344CF91CB5F0920026B677 /* PirataPerneta.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC344CF81CB5F0920026B677 /* PirataPerneta.swift */; };
 		AC344CFB1CB5F09C0026B677 /* PirataPeixe.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC344CFA1CB5F09C0026B677 /* PirataPeixe.swift */; };
+		B80776431CC930770011114F /* Barra.swift in Sources */ = {isa = PBXBuildFile; fileRef = B80776421CC930770011114F /* Barra.swift */; };
 		B8168D931CC5A7630098112A /* TiroPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8168D921CC5A7630098112A /* TiroPlayer.swift */; };
 /* End PBXBuildFile section */
 
@@ -660,6 +661,7 @@
 		AC344CDD1CB5D68B0026B677 /* tiro-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tiro-ipad.png"; sourceTree = "<group>"; };
 		AC344CF81CB5F0920026B677 /* PirataPerneta.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PirataPerneta.swift; sourceTree = "<group>"; };
 		AC344CFA1CB5F09C0026B677 /* PirataPeixe.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PirataPeixe.swift; sourceTree = "<group>"; };
+		B80776421CC930770011114F /* Barra.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Barra.swift; sourceTree = "<group>"; };
 		B8168D921CC5A7630098112A /* TiroPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TiroPlayer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1579,6 +1581,7 @@
 				AC344CF81CB5F0920026B677 /* PirataPerneta.swift */,
 				B8168D921CC5A7630098112A /* TiroPlayer.swift */,
 				AC344CFA1CB5F09C0026B677 /* PirataPeixe.swift */,
+				B80776421CC930770011114F /* Barra.swift */,
 			);
 			name = Objects;
 			sourceTree = "<group>";
@@ -1756,6 +1759,7 @@
 				1293CE2319C08A26006A0E25 /* OALAudioTrackNotifications.m in Sources */,
 				12F88ADF19DDA1D20001531E /* CCEffectBloom.m in Sources */,
 				1293CDEA19C08A26006A0E25 /* CCFileUtils.m in Sources */,
+				B80776431CC930770011114F /* Barra.swift in Sources */,
 				1293CD0F19C08A25006A0E25 /* CCAction.m in Sources */,
 				1293CE4919C08A26006A0E25 /* ALWrapper.m in Sources */,
 				1293CE9319C08A26006A0E25 /* CCBsequence.m in Sources */,

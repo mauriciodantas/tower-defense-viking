@@ -40,7 +40,7 @@ extension CGPoint {
 }
 
 // MARK: - Class Definition
-class GameScene: CCScene {
+class GameScene: CCScene,CCPhysicsCollisionDelegate {
     
 	// MARK: - Public Objects
 	internal var canPlay:Bool = true
@@ -51,10 +51,11 @@ class GameScene: CCScene {
     private var tempoMinimoEntreOndas:Double = 4
     private var velociodadeMinimaPercursoInimigo:Float = 7
     private var velocidadeArremesso:CGFloat = 700
+    var physicsWorld:CCPhysicsNode = CCPhysicsNode()
     
     //imagens
     let bg: CCSprite = CCSprite(imageNamed: "bgCenario-ipad.png")
-    let imgEnergia: CCSprite = CCSprite(imageNamed: "energiaVerde-ipad.png")
+    let barra: Barra = Barra()
     let imgPlayerIpad: CCSprite = CCSprite(imageNamed: "player-ipad.png")
     
     //labels
@@ -69,6 +70,9 @@ class GameScene: CCScene {
 	// MARK: - Life Cycle
 	override init() {
 		super.init()
+        
+        self.physicsWorld.collisionDelegate = self
+        self.addChild(self.physicsWorld,z:1)
         
         // Executa a musica de fundo
         OALSimpleAudio.sharedInstance().playBgWithLoop(true)
@@ -110,7 +114,7 @@ class GameScene: CCScene {
                 let Perneta:PirataPerneta = PirataPerneta(event: "updateScore", target: self)
                 Perneta.position = CGPointMake(positionX, positionY)
                 Perneta.name = "PirataPerneta"
-                self.addChild(Perneta, z: 2)
+                self.physicsWorld.addChild(Perneta, z: 2)
                 Perneta.moveMe()
             }
             
@@ -131,7 +135,7 @@ class GameScene: CCScene {
                 let Peixe:PirataPeixe = PirataPeixe(event: "updateScore", target: self)
                 Peixe.position = CGPointMake(positionX, positionY)
                 Peixe.name = "PirataPeixe"
-                self.addChild(Peixe, z: 2)
+                self.physicsWorld.addChild(Peixe, z: 2)
                 Peixe.moveMe()
             }
             
@@ -141,11 +145,12 @@ class GameScene: CCScene {
     }
     
     func addBulletAtPosition(position:CGPoint){
+        
         let bullet =  TiroPlayer()
         
         bullet.position = CGPointMake(self.imgPlayerIpad.position.x, self.imgPlayerIpad.position.y)
         
-        self.addChild(bullet, z: 1)
+        self.physicsWorld.addChild(bullet)
         
         let posicaoFinalTiro = self.calcularPosicaoFinalTiro(self.imgPlayerIpad.position, pontoTiro: position)
         
@@ -153,14 +158,12 @@ class GameScene: CCScene {
         
         let tempo = self.calcularTempoTrajetoria(distancia)
         
-        let angulo = self.calcularAngulo(bullet.position, p2: position)
-        
         let actions: [CCAction] = [CCActionMoveTo.actionWithDuration(tempo, position: posicaoFinalTiro) as! CCAction,
                                    CCActionCallBlock.actionWithBlock({ () -> Void in
                                     bullet.removeFromParentAndCleanup(true)
                                    }) as! CCAction]
-        bullet.runAction(CCActionSequence.actionWithArray(actions) as! CCAction)
         
+        bullet.runAction(CCActionSequence.actionWithArray(actions) as! CCAction)
     }
     
     func calcularDistanciaEntrePontos(p1: CGPoint, p2: CGPoint) -> CGFloat {
@@ -193,8 +196,8 @@ class GameScene: CCScene {
 
 
 	// MARK: - Public Methods
-    func updateScore() {
-        self.score+=1
+    private func updateScore(pontos:Int) {
+        self.score+=pontos
         self.lblScore.string = "Score: \(self.score)"
     }
     
@@ -206,14 +209,14 @@ class GameScene: CCScene {
         self.addChild(bg, z:0)
         
         //imgEnergia
-        self.imgEnergia.anchorPoint = CGPointMake(0.0, 0.0)
-        self.imgEnergia.position = CGPointMake(self.screenSize.width/2 - 512, self.screenSize.height/2 - 384)
-        self.addChild(self.imgEnergia, z: 1)
+        self.barra.anchorPoint = CGPointMake(0.0, 0.0)
+        self.barra.position = CGPointMake(self.screenSize.width/2 - 512, self.screenSize.height/2 - 384)
+        self.physicsWorld.addChild(self.barra, z: 1)
         
         //imgPlayer
         self.imgPlayerIpad.anchorPoint = CGPointMake(0.0, 0.0)
         self.imgPlayerIpad.position = CGPointMake(self.screenSize.width/2 - 510, self.screenSize.height/2 - 60)
-        self.addChild(imgPlayerIpad, z:2)
+        self.physicsWorld.addChild(imgPlayerIpad, z:2)
         
     }
     
@@ -223,14 +226,14 @@ class GameScene: CCScene {
         self.lblScore.color = CCColor.blackColor()
         self.lblScore.position = CGPointMake(self.screenSize.width/2, self.screenSize.height/2 + 355)
         self.lblScore.anchorPoint = CGPointMake(0.5, 0.5)
-        self.addChild(self.lblScore, z: 1)
+        self.physicsWorld.addChild(self.lblScore, z: 1)
         
         //lblGameOver
         self.lblGameOver.color = CCColor.redColor()
         self.lblGameOver.position = CGPointMake(self.screenSize.width/2, self.screenSize.height/2)
         self.lblGameOver.anchorPoint = CGPointMake(0.5, 0.5)
         self.lblGameOver.visible = false
-        self.addChild(lblGameOver, z: 1)
+        self.physicsWorld.addChild(lblGameOver, z: 1)
         
         
     }
@@ -243,7 +246,7 @@ class GameScene: CCScene {
         self.pauseButton.color = CCColor.blackColor()
         self.pauseButton.zoomWhenHighlighted = false
         self.pauseButton.block = {_ in StateMachine.sharedInstance.changeScene(StateMachineScenes.HomeScene, isFade:true)}
-        self.addChild(self.pauseButton)
+        self.physicsWorld.addChild(self.pauseButton)
         
         //btnQuit
         self.quitButton.position = CGPointMake(self.screenSize.width, self.screenSize.height)
@@ -251,7 +254,7 @@ class GameScene: CCScene {
         self.quitButton.color = CCColor.blackColor()
         self.quitButton.zoomWhenHighlighted = false
         self.quitButton.block = {_ in StateMachine.sharedInstance.changeScene(StateMachineScenes.HomeScene, isFade:true)}
-        self.addChild(self.quitButton)
+        self.physicsWorld.addChild(self.quitButton)
         
     }
     
@@ -261,10 +264,84 @@ class GameScene: CCScene {
             addBulletAtPosition(locationInView)
         }
         else{
-            //StateMachine.sharedInstance.changeScene(StateMachineScenes.HomeScene, isFade:true)
+            StateMachine.sharedInstance.changeScene(StateMachineScenes.HomeScene, isFade:true)
         }
     }
     
+    
+    ///COLISOES
+    func ccPhysicsCollisionBegin(pair: CCPhysicsCollisionPair!, PirataPerneta anPirata:PirataPerneta!, TiroPlayer anTiro:TiroPlayer!) -> Bool {
+        self.adicionarSplash(anPirata.position)
+        SoundPlayHelper.sharedInstance.playSoundWithControl(GameMusicAndSoundFx.SoundFxPuf)
+        anTiro.removeFromParentAndCleanup(true)
+        anPirata.removeFromParentAndCleanup(true)
+        self.updateScore(7)
+        return true
+    }
+    
+    func ccPhysicsCollisionBegin(pair: CCPhysicsCollisionPair!, PirataPeixe anPirata:PirataPeixe!, TiroPlayer anTiro:TiroPlayer!) -> Bool {
+        self.adicionarSplash(anPirata.position)
+        SoundPlayHelper.sharedInstance.playSoundWithControl(GameMusicAndSoundFx.SoundFxPuf)
+        anTiro.removeFromParentAndCleanup(true)
+        anPirata.removeFromParentAndCleanup(true)
+        self.updateScore(3)
+        return true
+    }
+    
+    func ccPhysicsCollisionBegin(pair: CCPhysicsCollisionPair!, PirataPerneta anPirata:PirataPerneta!, Barra anBarra:Barra!) -> Bool {
+        anPirata.removeFromParentAndCleanup(true)
+        self.barra.atingir()
+        
+        if(!self.barra.alive){
+            self.gameOver()
+        }
+        
+        return true
+    }
+    
+    func ccPhysicsCollisionBegin(pair: CCPhysicsCollisionPair!, PirataPeixe anPirata:PirataPeixe!, Barra anBarra:Barra!) -> Bool {
+        anPirata.removeFromParentAndCleanup(true)
+        self.barra.atingir()
+        
+        if(!self.barra.alive){
+            self.gameOver()
+        }
+        
+        return true
+    }
+    /// FIM COLISOES
+    
+    func adicionarSplash(posicao:CGPoint){
+        var smoke:CCParticleSystem = CCParticleExplosion(totalParticles: 10)
+        smoke.texture = CCSprite.spriteWithImageNamed("fire.png").texture
+        smoke.position = posicao
+        smoke.duration = 0.5
+        self.addChild(smoke)
+        
+    }
+    
+    
+    func gameOver(){
+        self.lblGameOver.visible = true
+        self.canPlay = false
+        for item in self.physicsWorld.children {
+            
+            item.stopAllActions()
+            
+            if let pirata =  item as? PirataPeixe{
+                pirata.stopAllSpriteActions()
+            }
+            
+            if let pirata =  item as? PirataPerneta{
+                pirata.stopAllSpriteActions()
+            }
+            
+            
+        }
+        
+        StateMachine.sharedInstance.atualizarMelhorScore(self.score)
+    }
+
 	
 	// MARK: - Delegates/Datasources
 	

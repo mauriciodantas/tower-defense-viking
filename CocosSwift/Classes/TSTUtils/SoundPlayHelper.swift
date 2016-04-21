@@ -10,8 +10,9 @@ import Foundation
 enum GameMusicAndSoundFx:String {
 	case MusicInGame = "MusicInGame.mp3"
 	case SoundFXButtonTap = "SoundFXButtonTap.mp3"
+    case SoundFxPuf = "SoundFXPuf.mp3"
 	
-	static let allSoundFx = [SoundFXButtonTap]
+	static let allSoundFx = [SoundFXButtonTap,SoundFxPuf]
 }
 
 class SoundPlayHelper {
