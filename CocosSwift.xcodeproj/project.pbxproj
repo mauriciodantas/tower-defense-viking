@@ -230,6 +230,7 @@
 		AC344CFB1CB5F09C0026B677 /* PirataPeixe.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC344CFA1CB5F09C0026B677 /* PirataPeixe.swift */; };
 		B80776431CC930770011114F /* Barra.swift in Sources */ = {isa = PBXBuildFile; fileRef = B80776421CC930770011114F /* Barra.swift */; };
 		B8168D931CC5A7630098112A /* TiroPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8168D921CC5A7630098112A /* TiroPlayer.swift */; };
+		B8A10AAC1CCD300300FA7542 /* PowerUP.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8A10AAB1CCD300300FA7542 /* PowerUP.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -663,6 +664,7 @@
 		AC344CFA1CB5F09C0026B677 /* PirataPeixe.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PirataPeixe.swift; sourceTree = "<group>"; };
 		B80776421CC930770011114F /* Barra.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Barra.swift; sourceTree = "<group>"; };
 		B8168D921CC5A7630098112A /* TiroPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TiroPlayer.swift; sourceTree = "<group>"; };
+		B8A10AAB1CCD300300FA7542 /* PowerUP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PowerUP.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1582,6 +1584,7 @@
 				B8168D921CC5A7630098112A /* TiroPlayer.swift */,
 				AC344CFA1CB5F09C0026B677 /* PirataPeixe.swift */,
 				B80776421CC930770011114F /* Barra.swift */,
+				B8A10AAB1CCD300300FA7542 /* PowerUP.swift */,
 			);
 			name = Objects;
 			sourceTree = "<group>";
@@ -1813,6 +1816,7 @@
 				1293CE3819C08A26006A0E25 /* ALContext.m in Sources */,
 				1293CD1219C08A25006A0E25 /* CCActionCatmullRom.m in Sources */,
 				1293CDA419C08A25006A0E25 /* CCSpriteFrameCache.m in Sources */,
+				B8A10AAC1CCD300300FA7542 /* PowerUP.swift in Sources */,
 				1293CD2F19C08A25006A0E25 /* CCClippingNode.m in Sources */,
 				1293CE5A19C08A26006A0E25 /* mach_timing.c in Sources */,
 				1293CD9419C08A25006A0E25 /* CCScheduler.m in Sources */,

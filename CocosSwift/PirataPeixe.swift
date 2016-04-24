@@ -12,12 +12,15 @@ internal class PirataPeixe : CCNode {
     // MARK: - Public Objects
     internal var eventSelector:Selector?
     internal var targetID:AnyObject?
+    var alive:Bool = true
     
     
     // MARK: - Private Objects
-    private var alive:Bool = true
     private var spritePirataPeixe:CCSprite?
     private let screenSize:CGSize = CCDirector.sharedDirector().viewSize()
+    
+    private var HP:Int = 7
+    private var SP:Int = 3
     
     // MARK: - Life Cycle
     override init() {
@@ -84,6 +87,22 @@ internal class PirataPeixe : CCNode {
         // Retorna o sprite para controle na classe
         return spriteRet
     }
+    
+    
+    func atingir(forcaAtaque:Int){
+        
+        self.HP-=forcaAtaque
+        
+        if(self.HP<=0){
+            
+            self.alive = false
+        }
+        var corAntiga = self.spritePirataPeixe?.color
+        var pintarSprite :CCActionTintTo = CCActionTintTo(duration: 0.4, color: CCColor.redColor())
+        var retornarCorAnterior:CCActionTintTo = CCActionTintTo(duration:0.0,color:corAntiga)
+        self.spritePirataPeixe?.runAction(CCActionSequence(one: pintarSprite, two: retornarCorAnterior))
+    }
+
     
     
     // MARK: - Public Methods

@@ -12,12 +12,16 @@ internal class PirataPerneta : CCNode {
     // MARK: - Public Objects
     internal var eventSelector:Selector?
     internal var targetID:AnyObject?
+    var alive:Bool = true
+
     
     
     // MARK: - Private Objects
-    private var alive:Bool = true
     private var spritePirataPerneta:CCSprite?
     private let screenSize:CGSize = CCDirector.sharedDirector().viewSize()
+    private var HP:Int = 3
+    private var SP:Int = 6
+
 
     // MARK: - Life Cycle
     override init() {
@@ -45,6 +49,21 @@ internal class PirataPerneta : CCNode {
 
         
     }
+    
+    func atingir(forcaAtaque:Int){
+        
+        self.HP-=forcaAtaque
+        
+        if(self.HP<=0){
+            
+            self.alive = false
+        }
+        var corAntiga = self.spritePirataPerneta?.color
+        var pintarSprite :CCActionTintTo = CCActionTintTo(duration: 0.4, color: CCColor.redColor())
+        var retornarCorAnterior:CCActionTintTo = CCActionTintTo(duration:0.0,color:corAntiga)
+        self.self.spritePirataPerneta?.runAction(CCActionSequence(one: pintarSprite, two: retornarCorAnterior))
+    }
+
     
     override func onEnter() {
         // Chamado apos o init quando entra no director
