@@ -14,32 +14,37 @@ class GameScene: CCScene,CCPhysicsCollisionDelegate {
     
 	// MARK: - Public Objects
 	internal var canPlay:Bool = true
+    internal var isPause:Bool = false
     
 	// MARK: - Private Objects
 	private let screenSize:CGSize = CCDirector.sharedDirector().viewSize()
     private var score:Int = 0
-    private var tempoMinimoEntreOndas:Double = 4
     private var velociodadeMinimaPercursoInimigo:Float = 7
     private var isPowerUP:Bool = false
     private var powerUPsEmTela:Int = 0
-
+    
     var physicsWorld:CCPhysicsNode = CCPhysicsNode()
     
     //imagens
     let bg: CCSprite = CCSprite(imageNamed: "bgCenario-ipad.png")
     let barra: Barra = Barra()
     let imgPlayerIpad: CCSprite = CCSprite(imageNamed: "player-ipad.png")
+    internal var corJogador: CCColor!  = CCColor.whiteColor()
     
     //labels
     let lblScore:CCLabelTTF = CCLabelTTF(string: "Score: 0", fontName: "Chalkduster", fontSize: 18.0)
     let lblGameOver:CCLabelTTF = CCLabelTTF(string: "-== GAME OVER ==-- \n    Tap to restart", fontName: "Chalkduster", fontSize: 25.0)
+    let lblPause:CCLabelTTF = CCLabelTTF(string: "-== PAUSE ==--", fontName: "Chalkduster", fontSize: 25.0)
     
     //botoes
     let pauseButton:CCButton = CCButton(title: "[ Pause ]", fontName: "Verdana-Bold", fontSize: 25.0)
     let quitButton:CCButton = CCButton(title: "[ Quit ]", fontName: "Verdana-Bold", fontSize: 25.0)
     
     //configuracoes jogo
-    var poderAtaque:Int = 2;
+    var poderAtaque:Int = 3;
+    let tempoPowerUP:Double = 10;
+    var tempoMinimoEntreOndas:Double = 4
+    var quantidadeMininaInimigosPorOnda = 8
     
 	
 	// MARK: - Life Cycle
@@ -65,57 +70,44 @@ class GameScene: CCScene,CCPhysicsCollisionDelegate {
 		super.onEnter()
         
         // Apos geracao, registra nova geracao apos um tempo
-        DelayHelper.sharedInstance.callFunc("generatePerneta", onTarget: self, withDelay: 0)
-        
-        // Apos geracao, registra nova geracao apos um tempo
-        DelayHelper.sharedInstance.callFunc("generatePeixe", onTarget: self, withDelay: 0)
-
+        DelayHelper.sharedInstance.callFunc("gerarPiratas", onTarget: self, withDelay: 0)
 	}
 
 	// Tick baseado no FPS
 	override func update(delta: CCTime) {
 		//...
 	}
-
-	// MARK: - Private Methods
-    func generatePerneta() {
+    
+    func gerarPiratas() {
         if (self.canPlay) {
             // Quantidade de inseto gerado por vez...
-            let bugAmout:Int = Int(arc4random_uniform(5) + 1)
+            let quantidadePiratas:Int = Int(arc4random_uniform(5)) + quantidadeMininaInimigosPorOnda
             
-            for (var i = 0; i < bugAmout; i++) {
-                let positionX:CGFloat = CGFloat(arc4random_uniform(100) + 1000)
+            for (var i = 0; i < quantidadePiratas; i++) {
+                let positionX:CGFloat = CGFloat(arc4random_uniform(500) + 1000)
                 let positionY:CGFloat = CGFloat(arc4random_uniform(500))
-                let Perneta:PirataPerneta = PirataPerneta(event: "updateScore", target: self)
-                Perneta.position = CGPointMake(positionX, positionY)
-                Perneta.name = "PirataPerneta"
-                self.physicsWorld.addChild(Perneta, z: 2)
-                Perneta.moveMe()
+                
+                //70% de chance de gerar inimigo 1 e 30% de gerar inimigo 2
+                if((arc4random_uniform(10) + 1)>3){
+                    let Perneta:PirataPerneta = PirataPerneta(event: "updateScore", target: self)
+                    Perneta.position = CGPointMake(positionX, positionY)
+                    Perneta.name = "PirataPerneta"
+                    self.physicsWorld.addChild(Perneta, z: 2)
+                    Perneta.moveMe()
+                }
+                else{
+                    
+                    let Peixe:PirataPeixe = PirataPeixe(event: "updateScore", target: self)
+                    Peixe.position = CGPointMake(positionX, positionY)
+                    Peixe.name = "PirataPeixe"
+                    self.physicsWorld.addChild(Peixe, z: 2)
+                    Peixe.moveMe()
+                    
+                }
             }
             
             // Apos geracao, registra nova geracao apos um tempo
-            DelayHelper.sharedInstance.callFunc("generatePerneta", onTarget: self, withDelay: self.tempoMinimoEntreOndas)
-        }
-    }
-    
-    
-    func generatePeixe() {
-        if (self.canPlay) {
-            // Quantidade de inseto gerado por vez...
-            let bugAmout:Int = Int(arc4random_uniform(5) + 1)
-            
-            for (var i = 0; i < bugAmout; i++) {
-                let positionX:CGFloat = CGFloat(arc4random_uniform(100) + 1000)
-                let positionY:CGFloat = CGFloat(arc4random_uniform(500))
-                let Peixe:PirataPeixe = PirataPeixe(event: "updateScore", target: self)
-                Peixe.position = CGPointMake(positionX, positionY)
-                Peixe.name = "PirataPeixe"
-                self.physicsWorld.addChild(Peixe, z: 2)
-                Peixe.moveMe()
-            }
-            
-            // Apos geracao, registra nova geracao apos um tempo
-            DelayHelper.sharedInstance.callFunc("generatePeixe", onTarget: self, withDelay: self.tempoMinimoEntreOndas)
+            DelayHelper.sharedInstance.callFunc("gerarPiratas", onTarget: self, withDelay: self.tempoMinimoEntreOndas)
         }
     }
     
@@ -131,6 +123,11 @@ class GameScene: CCScene,CCPhysicsCollisionDelegate {
     private func updateScore(pontos:Int) {
         self.score+=pontos
         self.lblScore.string = "Score: \(self.score)"
+        
+        //A cada 50 pontos reduz 5% o tempo entre ondas de inimigos
+        if(self.score%50 == 0){
+            self.tempoMinimoEntreOndas = self.tempoMinimoEntreOndas - (self.tempoMinimoEntreOndas * 0.05);
+        }
     }
     
     func adicionarImagens () {
@@ -167,6 +164,12 @@ class GameScene: CCScene,CCPhysicsCollisionDelegate {
         self.lblGameOver.visible = false
         self.physicsWorld.addChild(lblGameOver, z: 1)
         
+        self.lblPause.color = CCColor.redColor()
+        self.lblPause.position = CGPointMake(self.screenSize.width/2, self.screenSize.height/2)
+        self.lblPause.anchorPoint = CGPointMake(0.5, 0.5)
+        self.lblPause.visible = false
+        self.physicsWorld.addChild(lblPause, z: 1)
+        
         
     }
     
@@ -177,7 +180,9 @@ class GameScene: CCScene,CCPhysicsCollisionDelegate {
         self.pauseButton.anchorPoint = CGPointMake(1.8, 1.0)
         self.pauseButton.color = CCColor.blackColor()
         self.pauseButton.zoomWhenHighlighted = false
-        self.pauseButton.block = {_ in StateMachine.sharedInstance.changeScene(StateMachineScenes.HomeScene, isFade:true)}
+        self.pauseButton.block = {_ in
+            self.pausar()
+        }
         self.physicsWorld.addChild(self.pauseButton)
         
         //btnQuit
@@ -208,11 +213,14 @@ class GameScene: CCScene,CCPhysicsCollisionDelegate {
         
         if(!anPirata.alive){
             self.adicionarSplash(anPirata.position)
+            self.gerarPowerUP(anPirata.position)
             SoundPlayHelper.sharedInstance.playSoundWithControl(GameMusicAndSoundFx.SoundFxPuf)
-            anTiro.removeFromParentAndCleanup(true)
             anPirata.removeFromParentAndCleanup(true)
             self.updateScore(7)
         }
+        
+        anTiro.removeFromParentAndCleanup(true)
+        
         return true
     }
     
@@ -223,10 +231,13 @@ class GameScene: CCScene,CCPhysicsCollisionDelegate {
         if(!anPirata.alive){
             self.adicionarSplash(anPirata.position)
             SoundPlayHelper.sharedInstance.playSoundWithControl(GameMusicAndSoundFx.SoundFxPuf)
-            anTiro.removeFromParentAndCleanup(true)
+            self.gerarPowerUP(anPirata.position)
             anPirata.removeFromParentAndCleanup(true)
             self.updateScore(3)
         }
+        
+        anTiro.removeFromParentAndCleanup(true)
+
         return true
     }
     
@@ -251,14 +262,54 @@ class GameScene: CCScene,CCPhysicsCollisionDelegate {
         
         return true
     }
+    
+    func ccPhysicsCollisionBegin(pair: CCPhysicsCollisionPair!, PowerUP anPowerUP:PowerUP!, TiroPlayer anTiro:TiroPlayer!) -> Bool {
+        
+        self.iniciarPowerUP()
+        anTiro.removeFromParentAndCleanup(true)
+        anPowerUP.removeFromParentAndCleanup(true)
+    
+        return true
+    }
+    
     /// FIM COLISOES
     
     func adicionarSplash(posicao:CGPoint){
-        var smoke:CCParticleSystem = CCParticleExplosion(totalParticles: 10)
+        let smoke:CCParticleSystem = CCParticleExplosion(totalParticles: 8)
         smoke.texture = CCSprite.spriteWithImageNamed("fire.png").texture
         smoke.position = posicao
-        smoke.duration = 0.5
+        smoke.duration = 0.1
         self.addChild(smoke)
+    }
+    
+    
+    func gerarPowerUP(posicao:CGPoint){
+        if(!self.isPowerUP && self.powerUPsEmTela<=0){
+            
+            if((arc4random_uniform(10) + 1)==10){
+            
+                let anPowerUP:PowerUP = PowerUP();
+                anPowerUP.position = posicao
+                self.physicsWorld.addChild(anPowerUP)
+            }
+        }
+    }
+    
+    func iniciarPowerUP(){
+        self.poderAtaque = poderAtaque * 3
+        self.isPowerUP = true
+        self.powerUPsEmTela = self.powerUPsEmTela - 1
+        self.corJogador = self.imgPlayerIpad.color
+        let pintarSprite :CCActionTintTo = CCActionTintTo(duration: 0.0, color: CCColor.redColor())
+        self.imgPlayerIpad.runAction(pintarSprite)
+        DelayHelper.sharedInstance.callFunc("finalizarPowerUP", onTarget: self, withDelay: self.tempoPowerUP)
+    }
+    
+    func finalizarPowerUP(){
+        self.poderAtaque = 3
+        self.isPowerUP = false
+        var retornarCorAnterior:CCActionTintTo = CCActionTintTo(duration:0.0,color:corJogador)
+        self.imgPlayerIpad.runAction(retornarCorAnterior)
     }
     
     
@@ -281,6 +332,14 @@ class GameScene: CCScene,CCPhysicsCollisionDelegate {
         }
         
         StateMachine.sharedInstance.atualizarMelhorScore(self.score)
+    }
+    
+    func pausar(){
+        if(self.canPlay){
+            self.isPause = !self.isPause
+            self.lblPause.visible = isPause
+            super.paused = self.isPause
+        }
     }
 
 	

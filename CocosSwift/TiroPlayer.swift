@@ -72,7 +72,7 @@ class TiroPlayer : CCSprite {
         self.physicsBody.density = 100.0
         self.physicsBody.collisionType = "TiroPlayer"
         self.physicsBody.collisionCategories = ["TiroPlayer"]
-        self.physicsBody.collisionMask = ["PirataPeixe","PirataPerneta"]
+        self.physicsBody.collisionMask = ["PirataPeixe","PirataPerneta","PowerUP"]
         self.posicaoTiro=posicaoTiro
     }
     

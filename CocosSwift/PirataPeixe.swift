@@ -1,12 +1,3 @@
-//
-//  PirataPeixe.swift
-//  CocosSwift
-//
-//  Created by Usuário Convidado on 06/04/16.
-//  Copyright © 2016 Flameworks. All rights reserved.
-//
-
-// MARK: - Class Definition
 internal class PirataPeixe : CCNode {
     
     // MARK: - Public Objects
@@ -20,7 +11,8 @@ internal class PirataPeixe : CCNode {
     private let screenSize:CGSize = CCDirector.sharedDirector().viewSize()
     
     private var HP:Int = 7
-    private var SP:Int = 3
+    private var SP:CGFloat = 100
+
     
     // MARK: - Life Cycle
     override init() {
@@ -101,19 +93,35 @@ internal class PirataPeixe : CCNode {
         var pintarSprite :CCActionTintTo = CCActionTintTo(duration: 0.4, color: CCColor.redColor())
         var retornarCorAnterior:CCActionTintTo = CCActionTintTo(duration:0.0,color:corAntiga)
         self.spritePirataPeixe?.runAction(CCActionSequence(one: pintarSprite, two: retornarCorAnterior))
-    }
-
-    
+    }   
     
     // MARK: - Public Methods
     internal func moveMe() {
-        let speed:CGFloat = CGFloat(arc4random_uniform(4) + 4)
-        self.runAction(CCActionSequence.actionOne(CCActionMoveTo.actionWithDuration(CCTime(speed), position: CGPointMake(0, self.position.y )) as! CCActionFiniteTime,
+        
+        let posicaoFinalPirata = CGPointMake(0, self.position.y)
+        
+        let distancia = self.calcularDistanciaEntrePontos(self.position, p2:posicaoFinalPirata)
+        
+        let tempo = self.calcularTempoTrajetoria(distancia)
+        
+        self.runAction(CCActionSequence.actionOne(CCActionMoveTo.actionWithDuration(CCTime(tempo), position: posicaoFinalPirata) as! CCActionFiniteTime,
             two: CCActionCallBlock.actionWithBlock({ _ in
                 self.stopAllSpriteActions()
                 self.removeFromParentAndCleanup(true)
             }) as! CCActionFiniteTime)
             as! CCAction)
+    }
+    
+    func calcularDistanciaEntrePontos(p1: CGPoint, p2: CGPoint) -> CGFloat {
+        let xDist:CGFloat = (p2.x - p1.x);
+        let yDist:CGFloat = (p2.y - p1.y);
+        let distance:CGFloat = sqrt((xDist * xDist) + (yDist * yDist));
+        return distance
+    }
+    
+    func calcularTempoTrajetoria(distancia:CGFloat) -> Double {
+        let tempo:CGFloat = distancia / self.SP
+        return Double.init(tempo)
     }
     
     internal func stopAllSpriteActions() {

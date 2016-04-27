@@ -20,7 +20,7 @@ internal class PirataPerneta : CCNode {
     private var spritePirataPerneta:CCSprite?
     private let screenSize:CGSize = CCDirector.sharedDirector().viewSize()
     private var HP:Int = 3
-    private var SP:Int = 6
+    private var SP:CGFloat = 200
 
 
     // MARK: - Life Cycle
@@ -106,14 +106,33 @@ internal class PirataPerneta : CCNode {
     
     // MARK: - Public Methods
     internal func moveMe() {
-        let speed:CGFloat = CGFloat(arc4random_uniform(4) + 4)
-        self.runAction(CCActionSequence.actionOne(CCActionMoveTo.actionWithDuration(CCTime(speed), position: CGPointMake(0, self.position.y )) as! CCActionFiniteTime,
+        
+        let posicaoFinalPirata = CGPointMake(0, self.position.y)
+        
+        let distancia = self.calcularDistanciaEntrePontos(self.position, p2:posicaoFinalPirata)
+        
+        let tempo = self.calcularTempoTrajetoria(distancia)
+        
+        self.runAction(CCActionSequence.actionOne(CCActionMoveTo.actionWithDuration(CCTime(tempo), position: posicaoFinalPirata) as! CCActionFiniteTime,
             two: CCActionCallBlock.actionWithBlock({ _ in
                 self.stopAllSpriteActions()
                 self.removeFromParentAndCleanup(true)
             }) as! CCActionFiniteTime)
             as! CCAction)
     }
+    
+    func calcularDistanciaEntrePontos(p1: CGPoint, p2: CGPoint) -> CGFloat {
+        let xDist:CGFloat = (p2.x - p1.x);
+        let yDist:CGFloat = (p2.y - p1.y);
+        let distance:CGFloat = sqrt((xDist * xDist) + (yDist * yDist));
+        return distance
+    }
+    
+    func calcularTempoTrajetoria(distancia:CGFloat) -> Double {
+        let tempo:CGFloat = distancia / self.SP
+        return Double.init(tempo)
+    }
+
     
     internal func stopAllSpriteActions() {
         self.spritePirataPerneta!.stopAllActions()
