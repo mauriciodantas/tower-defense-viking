@@ -143,8 +143,8 @@ class GameScene: CCScene,CCPhysicsCollisionDelegate {
         self.physicsWorld.addChild(self.barra, z: 1)
         
         //imgPlayer
-        self.imgPlayerIpad.anchorPoint = CGPointMake(0.0, 0.0)
-        self.imgPlayerIpad.position = CGPointMake(self.screenSize.width/2 - 510, self.screenSize.height/2 - 60)
+        self.imgPlayerIpad.anchorPoint = CGPointMake(0.5, 0.5)
+        self.imgPlayerIpad.position = CGPointMake(self.screenSize.width/2 - 460, self.screenSize.height/2 - 60)
         self.physicsWorld.addChild(imgPlayerIpad, z:2)
         
     }
@@ -291,6 +291,7 @@ class GameScene: CCScene,CCPhysicsCollisionDelegate {
                 let anPowerUP:PowerUP = PowerUP();
                 anPowerUP.position = posicao
                 self.physicsWorld.addChild(anPowerUP)
+                self.powerUPsEmTela=powerUPsEmTela+1
             }
         }
     }

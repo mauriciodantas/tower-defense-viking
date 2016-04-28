@@ -62,7 +62,7 @@ class TiroPlayer : CCSprite {
     convenience init(posicaoTiro:CGPoint) {
         self.init(imageNamed:"tiro-ipad.png")
          self.contentSize = self.boundingBox().size
-        
+        self.anchorPoint = CGPointMake(0.5, 0.5)
         self.scale = 0.8
         self.physicsBody = CCPhysicsBody(rect: CGRectMake(0, 0, self.contentSize.width, self.contentSize.height), cornerRadius: 0.0)
         self.physicsBody.type = CCPhysicsBodyType.Kinematic
@@ -78,8 +78,11 @@ class TiroPlayer : CCSprite {
     
     override func onEnter() {
         super.onEnter()
-    }
     
+        let girar:CCActionRepeatForever=CCActionRepeatForever(action: CCActionSequence.actionOne(CCActionRotateTo.actionWithDuration(0.5, angle: 180) as! CCActionFiniteTime, two: CCActionRotateTo.actionWithDuration(0.5, angle: 360) as! CCActionFiniteTime) as! CCActionInterval)
+        self.runAction(girar)
+    
+    }
     
     
     func movaMe(){
