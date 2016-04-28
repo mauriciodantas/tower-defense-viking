@@ -275,11 +275,13 @@ class GameScene: CCScene,CCPhysicsCollisionDelegate {
     /// FIM COLISOES
     
     func adicionarSplash(posicao:CGPoint){
-        let smoke:CCParticleSystem = CCParticleExplosion(totalParticles: 8)
-        smoke.texture = CCSprite.spriteWithImageNamed("fire.png").texture
-        smoke.position = posicao
-        smoke.duration = 0.1
-        self.addChild(smoke)
+        let splash:CCParticleSystem = CCParticleExplosion(totalParticles:4)
+        splash.position = posicao
+        splash.duration = 0.1
+        splash.startColor = CCColor.redColor()
+        splash.endColor = CCColor.redColor()
+        splash.color = CCColor.redColor()
+        self.addChild(splash)
     }
     
     
